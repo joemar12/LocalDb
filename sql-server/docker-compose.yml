@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  sql-server:
+    build: .
+    image: sql-server-2025:latest
+    container_name: sql-server-2025
+    environment:
+      SA_PASSWORD_FILE: /run/secrets/db_password
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD_FILE: /run/secrets/db_password
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    secrets:
+      - db_password
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "if [ ! -f /run/secrets/db_password ]; then exit 1; fi && /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $(cat /run/secrets/db_password) -Q 'SELECT 1' > /dev/null 2>&1" ]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 40s
+    networks:
+      - sql-network
+    restart: unless-stopped
+
+volumes:
+  sqlserver_data:
+    driver: local
+
+secrets:
+  db_password:
+    environment: MSSQL_PASSWORD
+
+networks:
+  sql-network:
+    driver: bridge
