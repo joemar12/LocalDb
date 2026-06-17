@@ -1,10 +1,9 @@
-version: '3.8'
-
+name: database
 services:
   sql-server:
     build: .
     image: sql-server-2025:latest
-    container_name: sql-server-2025
+    container_name: sql-server
     environment:
       SA_PASSWORD_FILE: /run/secrets/db_password
       ACCEPT_EULA: Y
