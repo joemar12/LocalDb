@@ -34,19 +34,21 @@ MSSQL_PASSWORD=YourStrong@Password123
 - SQL Server reads the password from the secret file
 - Password is never stored on disk or in the image
 
-## Connection Details:
+## Connection Details (MS SQL Server):
 - **Server**: localhost,1433
 - **Username**: sa
 - **Password**: (from MSSQL_PASSWORD env var)
 
+## Connection Details (PostgreSQL)
+- **Server**: localhost,5432
+- **Username**: (from POSTGRES_USER env var)
+- **Password**: (from POSTGRES_PASSWORD env var)
+
 ## Verify the setup:
-```bash
+```powershell
 docker-compose ps
-docker logs sql-server-2025
 ```
 
 ## Important:
 - Set `MSSQL_PASSWORD` before running `docker-compose up`
-- Optional: Add `.env` to `.gitignore` if you use it for reference
-- Use strong passwords (min 8 chars: uppercase, lowercase, digits, special chars)
-- Change passwords regularly in production
+- For **postgres**, the instructions are pretty much the same, but set the `POSTGRES_PASSWORD` and `POSTGRES_USER` variables in the `.env` file.
