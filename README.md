@@ -1,5 +1,3 @@
-# SQL Server 2025 Docker Setup - Environment Variable Secrets
-
 ## Setup Instructions
 
 ### Set the password from host environment variables:
