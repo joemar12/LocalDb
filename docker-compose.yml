@@ -43,10 +43,35 @@ services:
       start_period: 10s
     restart: unless-stopped
 
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD_FILE: /run/secrets/pgadmin_password
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    secrets:
+      - pgadmin_password
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://localhost/misc/ping || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
 volumes:
   sqlserver_data:
     driver: local
   postgres_data:
+    driver: local
+  pgadmin_data:
     driver: local
 
 secrets:
@@ -54,6 +79,8 @@ secrets:
     environment: MSSQL_PASSWORD
   pg_password:
     environment: POSTGRES_PASSWORD
+  pgadmin_password:
+    environment: PGADMIN_PASSWORD
 
 networks:
   sql-network:
