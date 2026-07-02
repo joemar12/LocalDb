@@ -20,8 +20,7 @@ services:
       retries: 5
       start_period: 40s
     networks:
-      - sql-network
-    restart: unless-stopped
+      - pse_network
 
   postgres:
     image: postgres:16
@@ -42,6 +41,8 @@ services:
       retries: 5
       start_period: 10s
     restart: unless-stopped
+    networks:
+      - pse_network
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -64,7 +65,8 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
-    restart: unless-stopped
+    networks:
+      - pse_network
 
 volumes:
   sqlserver_data:
@@ -83,5 +85,6 @@ secrets:
     environment: PGADMIN_PASSWORD
 
 networks:
-  sql-network:
+  pse_network:
     driver: bridge
+    name: pse_network
