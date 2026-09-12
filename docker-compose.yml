@@ -40,7 +40,27 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-    restart: unless-stopped
+    networks:
+      - pse_network
+
+  postgres_test:
+    image: postgres:16
+    container_name: postgres_test
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD_FILE: /run/secrets/pg_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    secrets:
+      - pg_password
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     networks:
       - pse_network
 
@@ -72,6 +92,8 @@ volumes:
   sqlserver_data:
     driver: local
   postgres_data:
+    driver: local
+  postgres_test_data:
     driver: local
   pgadmin_data:
     driver: local
